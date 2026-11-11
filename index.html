@@ -3,17 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyPDF — Fast, Secure & Free Client-Side PDF Tools</title>
+  <title>EasyPDF — Free 100% Secure Client-Side PDF Tools</title>
+  <meta name="description" content="Free online PDF utility suite to merge, split, compress, rotate, convert images to PDF, and reorder pages instantly in your browser with zero server uploads." />
+  
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:title" content="EasyPDF — Free Client-Side PDF Tools" />
+  <meta property="og:description" content="Merge, split, compress, and organize PDFs securely in your browser without uploading files." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://easypdf-tools-gray.vercel.app/" />
+
+  <!-- Tailwind CSS & pdf-lib -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="/_vercel/insights/script.js"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6495721001457982"
-     crossorigin="anonymous"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-  // Configure pdf.js worker source
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-</script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
