@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://easypdf-tools-gray.vercel.app/sitemap.xml
