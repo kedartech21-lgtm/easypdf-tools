@@ -7,6 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="/_vercel/insights/script.js"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  // Configure pdf.js worker source
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
@@ -46,7 +51,8 @@
         <button id="btn-compress" onclick="switchTab('compress')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Compress</button>
         <button id="btn-rotate" onclick="switchTab('rotate')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Rotate</button>
         <button id="btn-img2pdf" onclick="switchTab('img2pdf')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Images to PDF</button>
-      </div>
+        <button id="btn-organize" onclick="switchTab('organize')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Organize & Reorder</button>
+    </div>
     </div>
 
     <!-- ================= TAB 1: MERGE ================= -->
@@ -140,6 +146,26 @@
         <button id="img-action" onclick="runImgToPdf()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Convert & Download</button>
       </div>
     </section>
+
+    <!-- ================= TAB: ORGANIZE & REORDER ================= -->
+<section id="panel-organize" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+  <h2 class="text-xl font-bold text-slate-900 mb-2">Organize & Reorder Pages</h2>
+  <p class="text-slate-500 text-sm mb-6">Preview thumbnails, delete unwanted pages, or drag/move them into your preferred order.</p>
+  
+  <div id="organize-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+    <p id="organize-label" class="text-slate-700 font-medium mb-1">Click to select a PDF to organize</p>
+    <input type="file" id="organize-input" accept="application/pdf" class="hidden" />
+  </div>
+
+  <div id="organize-workspace" class="mt-6 hidden space-y-4 border-t pt-6">
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-slate-500">Tip: Use the arrow buttons on each page to shift order, or remove pages you don't need.</span>
+      <button onclick="runOrganizeExport()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Export Reordered PDF</button>
+    </div>
+    <!-- Thumbnail Grid -->
+    <div id="organize-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[500px] overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200"></div>
+  </div>
+</section>
 
   </main>
 
@@ -285,6 +311,114 @@
       input.onchange = (e) => callback(e.target.files);
       drop.ondragover = (e) => e.preventDefault();
       drop.ondrop = (e) => { e.preventDefault(); callback(e.dataTransfer.files); };
+    }
+
+    // ORGANIZE & REORDER LOGIC
+    let orgOriginalPdfBytes = null;
+    let orgFileName = '';
+    // Stores the current sequence of page indices (0-based)
+    let pageOrderSequence = [];
+
+    setupDropZone('organize', async (files) => {
+      if(!files[0] || files[0].type !== 'application/pdf') return;
+      orgFileName = files[0].name;
+      orgOriginalPdfBytes = await files[0].arrayBuffer();
+      
+      document.getElementById('organize-label').textContent = `Selected: ${orgFileName}`;
+      document.getElementById('organize-workspace').classList.remove('hidden');
+      await renderThumbnails(orgOriginalPdfBytes);
+    });
+
+    async function renderThumbnails(pdfBytes) {
+      const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+      const pdfDoc = await loadingTask.promise;
+      const totalPages = pdfDoc.numPages;
+      
+      pageOrderSequence = Array.from({ length: totalPages }, (_, i) => i);
+      await buildThumbnailGrid(pdfDoc);
+    }
+
+    async function buildThumbnailGrid(pdfDoc) {
+      const grid = document.getElementById('organize-grid');
+      grid.innerHTML = '';
+
+      for (let idx = 0; idx < pageOrderSequence.length; idx++) {
+        const pageNum = pageOrderSequence[idx]; // 0-based original index
+        
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-slate-200 rounded-lg p-3 flex flex-col items-center shadow-sm relative group';
+        
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'w-full h-36 flex items-center justify-center bg-slate-100 rounded mb-2 overflow-hidden';
+        
+        const canvas = document.createElement('canvas');
+        canvasContainer.appendChild(canvas);
+        
+        // Render PDF page onto canvas thumbnail
+        const page = await pdfDoc.getPage(pageNum + 1);
+        const viewport = page.getViewport({ scale: 0.3 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+        // Page info & Controls footer
+        const footer = document.createElement('div');
+        footer.className = 'w-full flex items-center justify-between text-xs text-slate-600 mt-1';
+        footer.innerHTML = `
+          <span class="font-semibold">Page ${pageNum + 1}</span>
+          <div class="flex gap-1">
+            <button onclick="movePage(${idx}, -1)" title="Move Left" class="p-1 hover:bg-slate-100 rounded">◀</button>
+            <button onclick="movePage(${idx}, 1)" title="Move Right" class="p-1 hover:bg-slate-100 rounded">▶</button>
+            <button onclick="removeOrgPage(${idx})" title="Delete" class="p-1 text-rose-500 hover:bg-rose-50 rounded">✕</button>
+          </div>
+        `;
+
+        card.appendChild(canvasContainer);
+        card.appendChild(footer);
+        grid.appendChild(card);
+      }
+    }
+
+    async function movePage(currentIndex, direction) {
+      const newIndex = currentIndex + direction;
+      if (newIndex < 0 || newIndex >= pageOrderSequence.length) return;
+      
+      // Swap elements in array
+      const temp = pageOrderSequence[currentIndex];
+      pageOrderSequence[currentIndex] = pageOrderSequence[newIndex];
+      pageOrderSequence[newIndex] = temp;
+      
+      // Re-render grid thumbnails
+      const loadingTask = pdfjsLib.getDocument({ data: orgOriginalPdfBytes });
+      await buildThumbnailGrid(await loadingTask.promise);
+    }
+
+    async function removeOrgPage(currentIndex) {
+      if (pageOrderSequence.length <= 1) {
+        return alert("Cannot remove the last remaining page.");
+      }
+      pageOrderSequence.splice(currentIndex, 1);
+      
+      const loadingTask = pdfjsLib.getDocument({ data: orgOriginalPdfBytes });
+      await buildThumbnailGrid(await loadingTask.promise);
+    }
+
+    async function runOrganizeExport() {
+      if (!orgOriginalPdfBytes || pageOrderSequence.length === 0) return;
+      
+      try {
+        const sourcePdf = await PDFLib.PDFDocument.load(orgOriginalPdfBytes);
+        const newPdf = await PDFLib.PDFDocument.create();
+        
+        // Copy pages in the exact custom order defined by pageOrderSequence
+        const copiedPages = await newPdf.copyPages(sourcePdf, pageOrderSequence);
+        copiedPages.forEach(p => newPdf.addPage(p));
+        
+        const savedBytes = await newPdf.save();
+        downloadBlob(savedBytes, `easypdf-organized-${orgFileName}`);
+      } catch (err) {
+        alert("Failed to export reordered PDF.");
+      }
     }
   </script>
 </body>
