@@ -1,223 +1,301 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyPDF - Free Online PDF Merger & Tools</title>
-  <meta name="description" content="Combine multiple PDF files into one single document instantly in your browser. 100% free, secure, and private." />
-  
-  <!-- Tailwind CSS CDN -->
+  <title>EasyPDF — Fast, Secure & Free Client-Side PDF Tools</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- PDF-Lib -->
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  
-  <style>
-    .drag-over { border-color: #2563eb !important; background-color: #eff6ff !important; transform: scale(1.01); }
-    .transition-all { transition: all 0.2s ease-in-out; }
-  </style>
 </head>
-<body class="bg-gradient-to-b from-slate-50 to-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <!-- Header / Navbar -->
-  <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-          </svg>
+  <!-- Header / Navigation -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 text-white font-black rounded-lg w-9 h-9 flex items-center justify-center text-xl shadow-md">
+          E
         </div>
-        <span class="font-black text-xl tracking-tight text-slate-900">Easy<span class="text-blue-600">PDF</span></span>
+        <span class="font-bold text-xl tracking-tight text-slate-900">EasyPDF</span>
       </div>
-      <nav class="hidden md:flex space-x-8 text-sm font-semibold text-slate-600">
-        <a href="#" class="text-blue-600 transition-colors">Merge PDF</a>
-        <a href="#" class="hover:text-blue-600 transition-colors">Compress PDF</a>
-        <a href="#" class="hover:text-blue-600 transition-colors">JPG to PDF</a>
-        <a href="#" class="hover:text-blue-600 transition-colors">All Tools</a>
-      </nav>
+      <span class="text-xs bg-emerald-100 text-emerald-800 font-medium px-2.5 py-1 rounded-full border border-emerald-200">
+        100% Client-Side Privacy
+      </span>
     </div>
   </header>
 
   <!-- Main Container -->
-  <main class="max-w-4xl mx-auto px-6 py-12 flex-grow w-full">
-    
-    <!-- Top Ad Banner Placeholder -->
-    <div class="w-full mb-8 p-3 bg-white/50 border border-dashed border-slate-300 rounded-xl text-center text-xs text-slate-400">
-      ADVERTISEMENT SLOT (Leaderboard)
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
+
+    <!-- Hero Title -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
+        Simple, Powerful PDF Utilities
+      </h1>
+      <p class="text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
+        Process your documents securely right inside your browser. No files are ever uploaded to any external server.
+      </p>
     </div>
 
-    <!-- Hero Title Section -->
-    <div class="text-center mb-10">
-      <div class="inline-flex items-center space-x-2 bg-blue-50 border border-blue-100 text-blue-700 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4">
-        <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-        <span>100% Free & Secure Client-Side Processing</span>
-      </div>
-      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">Merge PDF Files Together</h1>
-      <p class="text-slate-500 text-base max-w-xl mx-auto">Combine multiple PDF documents into a single organized file directly in your browser. No registration or file uploads required.</p>
-    </div>
-
-    <!-- Main Tool Workspace Card -->
-    <div class="bg-white shadow-xl shadow-slate-200/50 border border-slate-200/80 rounded-2xl p-8 transition-all">
-      
-      <!-- Dropzone -->
-      <div id="dropzone" class="border-2 border-dashed border-slate-300 rounded-2xl p-10 text-center cursor-pointer transition-all hover:border-blue-500 bg-slate-50/50 hover:bg-blue-50/30 group">
-        <input type="file" id="fileInput" multiple accept="application/pdf" class="hidden" />
-        <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-inner">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-          </svg>
-        </div>
-        <p class="text-lg font-bold text-slate-700 mb-1">Choose PDF files</p>
-        <p class="text-sm text-slate-400">or drag & drop them right here</p>
-      </div>
-
-      <!-- Selected Files List Container -->
-      <div id="fileListContainer" class="mt-8 hidden">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="text-sm font-bold text-slate-700">Selected Files (<span id="fileCount">0</span>)</h3>
-          <button id="clearBtn" class="text-xs text-rose-500 hover:text-rose-700 font-semibold transition-colors">Clear All</button>
-        </div>
-        <ul id="fileList" class="space-y-2.5 max-h-72 overflow-y-auto pr-2"></ul>
-      </div>
-
-      <!-- Action Footer inside Card -->
-      <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-        <span class="text-xs text-slate-400 font-medium hidden sm:inline-block">🔒 Files never leave your device</span>
-        <button id="mergeBtn" disabled class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-blue-600/25 disabled:opacity-40 disabled:cursor-not-allowed transition-all transform active:scale-95">
-          Merge & Download PDF
+    <!-- Navigation Tabs -->
+    <div class="flex justify-center mb-6">
+      <div class="bg-slate-200 p-1 rounded-xl flex gap-1 border border-slate-300">
+        <button id="tab-merge-btn" onclick="switchTab('merge')" class="px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">
+          Merge PDFs
+        </button>
+        <button id="tab-split-btn" onclick="switchTab('split')" class="px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
+          Split PDF
         </button>
       </div>
     </div>
 
-    <!-- Bottom Ad Banner Placeholder -->
-    <div class="w-full my-8 p-6 bg-white/50 border border-dashed border-slate-300 rounded-xl text-center text-xs text-slate-400">
-      ADVERTISEMENT SLOT (Native / Display Banner)
-    </div>
+    <!-- TAB 1: MERGE PDF SECTION -->
+    <section id="tab-merge" class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8">
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Merge PDF Files</h2>
+      <p class="text-slate-500 text-sm mb-6">Combine multiple PDF documents into a single file in seconds.</p>
 
-    <!-- Feature Grid Highlights (Like Smallpdf/iLovePDF) -->
-    <div class="grid md:grid-cols-3 gap-6 mt-12">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold mb-4">✓</div>
-        <h3 class="font-bold text-slate-900 mb-1">100% Private</h3>
-        <p class="text-sm text-slate-500">All merging happens securely inside your browser memory. Your documents are never uploaded to any server.</p>
+      <!-- Drag & Drop Zone -->
+      <div id="merge-drop-zone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 hover:bg-indigo-50/50 rounded-xl p-8 text-center cursor-pointer transition">
+        <svg class="mx-auto h-12 w-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <p class="text-slate-700 font-medium mb-1">Click to browse or drag & drop PDFs here</p>
+        <p class="text-xs text-slate-500">Supports selecting multiple files simultaneously</p>
+        <input type="file" id="merge-file-input" accept="application/pdf" multiple class="hidden" />
       </div>
-      <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold mb-4">⚡</div>
-        <h3 class="font-bold text-slate-900 mb-1">Lightning Fast</h3>
-        <p class="text-sm text-slate-500">No waiting in queue queues or upload speed limits. Combine large PDFs in a matter of seconds.</p>
+
+      <!-- File List -->
+      <ul id="merge-file-list" class="mt-6 space-y-2"></ul>
+
+      <!-- Action Button -->
+      <div class="mt-6 flex justify-end">
+        <button id="merge-btn" onclick="mergePDFs()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">
+          Merge & Download
+        </button>
       </div>
-      <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold mb-4">💻</div>
-        <h3 class="font-bold text-slate-900 mb-1">Works Anywhere</h3>
-        <p class="text-sm text-slate-500">Fully compatible with Mac, Windows, Linux, and mobile devices without requiring software installations.</p>
+    </section>
+
+    <!-- TAB 2: SPLIT PDF SECTION -->
+    <section id="tab-split" class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Split PDF Document</h2>
+      <p class="text-slate-500 text-sm mb-6">Extract specific pages or page ranges into a new PDF document.</p>
+
+      <!-- Drag & Drop Zone -->
+      <div id="split-drop-zone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 hover:bg-indigo-50/50 rounded-xl p-8 text-center cursor-pointer transition">
+        <svg class="mx-auto h-12 w-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        </svg>
+        <p id="split-file-label" class="text-slate-700 font-medium mb-1">Click to select a PDF file to split</p>
+        <p class="text-xs text-slate-500">Select 1 PDF file</p>
+        <input type="file" id="split-file-input" accept="application/pdf" class="hidden" />
       </div>
-    </div>
+
+      <!-- Split Range Input Controls -->
+      <div id="split-controls" class="mt-6 hidden space-y-4 border-t border-slate-200 pt-6">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Page Range to Extract</label>
+          <input type="text" id="split-range" placeholder="e.g. 1-3, 5, 8-10" class="w-full border border-slate-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <p class="text-xs text-slate-500 mt-1">Specify single pages or ranges separated by commas (e.g., <span class="font-mono bg-slate-100 px-1 rounded">1-3, 5</span>).</p>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span id="split-total-pages" class="text-sm font-medium text-slate-600"></span>
+          <button id="split-btn" onclick="splitPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">
+            Extract & Download
+          </button>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-400">
-    <p>© 2026 EasyPDF. Built for speed, privacy, and simplicity.</p>
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-500 text-xs">
+    <p>© 2026 EasyPDF. Built for 100% client-side privacy.</p>
   </footer>
 
-  <!-- JavaScript Application Logic -->
+  <!-- App Logic Javascript -->
   <script>
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileInput');
-    const fileList = document.getElementById('fileList');
-    const fileListContainer = document.getElementById('fileListContainer');
-    const fileCount = document.getElementById('fileCount');
-    const mergeBtn = document.getElementById('mergeBtn');
-    const clearBtn = document.getElementById('clearBtn');
+    // Tab Switcher Logic
+    function switchTab(tab) {
+      const mergeTab = document.getElementById('tab-merge');
+      const splitTab = document.getElementById('tab-split');
+      const mergeBtn = document.getElementById('tab-merge-btn');
+      const splitBtn = document.getElementById('tab-split-btn');
 
-    let uploadedFiles = [];
-
-    dropzone.addEventListener('click', () => fileInput.click());
-    
-    ['dragenter', 'dragover'].forEach(e => {
-      dropzone.addEventListener(e, (evt) => { evt.preventDefault(); dropzone.classList.add('drag-over'); });
-    });
-    ['dragleave', 'drop'].forEach(e => {
-      dropzone.addEventListener(e, (evt) => { evt.preventDefault(); dropzone.classList.remove('drag-over'); });
-    });
-
-    dropzone.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
-    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-
-    function handleFiles(files) {
-      const newFiles = Array.from(files).filter(f => f.type === 'application/pdf');
-      uploadedFiles.push(...newFiles);
-      updateUI();
-    }
-
-    function updateUI() {
-      fileList.innerHTML = '';
-      if (uploadedFiles.length === 0) {
-        fileListContainer.classList.add('hidden');
-        clearBtn.classList.add('hidden');
-        mergeBtn.disabled = true;
-        return;
+      if (tab === 'merge') {
+        mergeTab.classList.remove('hidden');
+        splitTab.classList.add('hidden');
+        mergeBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition';
+        splitBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
+      } else {
+        splitTab.classList.remove('hidden');
+        mergeTab.classList.add('hidden');
+        splitBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition';
+        mergeBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
       }
+    }
 
-      fileListContainer.classList.remove('hidden');
-      clearBtn.classList.remove('hidden');
-      mergeBtn.disabled = uploadedFiles.length < 2;
-      fileCount.textContent = uploadedFiles.length;
+    // ------------------------------------------------------------------
+    // MERGE FEATURE LOGIC
+    // ------------------------------------------------------------------
+    let mergeFiles = [];
+    const mergeDropZone = document.getElementById('merge-drop-zone');
+    const mergeFileInput = document.getElementById('merge-file-input');
+    const mergeFileList = document.getElementById('merge-file-list');
+    const mergeBtn = document.getElementById('merge-btn');
 
-      uploadedFiles.forEach((file, idx) => {
+    mergeDropZone.onclick = () => mergeFileInput.click();
+    mergeFileInput.onchange = (e) => handleMergeFiles(e.target.files);
+
+    mergeDropZone.ondragover = (e) => { e.preventDefault(); mergeDropZone.classList.add('border-indigo-500', 'bg-indigo-50/50'); };
+    mergeDropZone.ondragleave = () => mergeDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+    mergeDropZone.ondrop = (e) => {
+      e.preventDefault();
+      mergeDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+      handleMergeFiles(e.dataTransfer.files);
+    };
+
+    function handleMergeFiles(files) {
+      for (const file of files) {
+        if (file.type === 'application/pdf') mergeFiles.push(file);
+      }
+      renderMergeList();
+    }
+
+    function renderMergeList() {
+      mergeFileList.innerHTML = '';
+      mergeFiles.forEach((file, idx) => {
         const li = document.createElement('li');
-        li.className = 'flex justify-between items-center bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-xs transition-all hover:bg-slate-100/80';
+        li.className = 'flex items-center justify-between bg-slate-100 px-4 py-2 rounded-lg text-sm font-medium text-slate-700';
         li.innerHTML = `
-          <div class="flex items-center space-x-3 truncate">
-            <span class="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-500 shadow-sm">${idx + 1}</span>
-            <span class="font-medium text-slate-700 truncate">${file.name}</span>
-            <span class="text-slate-400 font-normal">(${(file.size / (1024 * 1024)).toFixed(2)} MB)</span>
-          </div>
-          <button onclick="removeFile(${idx})" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors font-bold">✕</button>
+          <span class="truncate max-w-xs">${idx + 1}. ${file.name}</span>
+          <button onclick="removeMergeFile(${idx})" class="text-rose-500 hover:text-rose-700 font-bold ml-2">✕</button>
         `;
-        fileList.appendChild(li);
+        mergeFileList.appendChild(li);
       });
+      mergeBtn.disabled = mergeFiles.length === 0;
     }
 
-    function removeFile(index) {
-      uploadedFiles.splice(index, 1);
-      updateUI();
+    function removeMergeFile(index) {
+      mergeFiles.splice(index, 1);
+      renderMergeList();
     }
 
-    clearBtn.addEventListener('click', () => {
-      uploadedFiles = [];
-      updateUI();
-    });
-
-    mergeBtn.addEventListener('click', async () => {
-      if (uploadedFiles.length < 2) return;
-      mergeBtn.textContent = 'Merging PDFs...';
+    async function mergePDFs() {
+      if (mergeFiles.length === 0) return;
       mergeBtn.disabled = true;
+      mergeBtn.textContent = 'Processing...';
 
       try {
         const mergedPdf = await PDFLib.PDFDocument.create();
-        for (const file of uploadedFiles) {
-          const arrayBuffer = await file.arrayBuffer();
-          const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+        for (const file of mergeFiles) {
+          const bytes = await file.arrayBuffer();
+          const pdf = await PDFLib.PDFDocument.load(bytes);
           const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
           copiedPages.forEach((page) => mergedPdf.addPage(page));
         }
 
-        const pdfBytes = await mergedPdf.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `merged_${Date.now()}.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const mergedPdfBytes = await mergedPdf.save();
+        downloadBlob(mergedPdfBytes, 'easypdf-merged.pdf');
       } catch (err) {
-        alert('An error occurred while merging PDFs: ' + err.message);
+        alert('Failed to merge PDFs. One of the files might be encrypted or corrupted.');
       } finally {
-        mergeBtn.textContent = 'Merge & Download PDF';
         mergeBtn.disabled = false;
+        mergeBtn.textContent = 'Merge & Download';
       }
-    });
+    }
+
+    // ------------------------------------------------------------------
+    // SPLIT FEATURE LOGIC
+    // ------------------------------------------------------------------
+    let splitFile = null;
+    let splitPdfDoc = null;
+    const splitDropZone = document.getElementById('split-drop-zone');
+    const splitFileInput = document.getElementById('split-file-input');
+    const splitControls = document.getElementById('split-controls');
+    const splitFileLabel = document.getElementById('split-file-label');
+    const splitTotalPages = document.getElementById('split-total-pages');
+
+    splitDropZone.onclick = () => splitFileInput.click();
+    splitFileInput.onchange = (e) => {
+      if (e.target.files.length > 0) handleSplitFile(e.target.files[0]);
+    };
+
+    splitDropZone.ondragover = (e) => { e.preventDefault(); splitDropZone.classList.add('border-indigo-500', 'bg-indigo-50/50'); };
+    splitDropZone.ondragleave = () => splitDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+    splitDropZone.ondrop = (e) => {
+      e.preventDefault();
+      splitDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+      if (e.dataTransfer.files.length > 0) handleSplitFile(e.dataTransfer.files[0]);
+    };
+
+    async function handleSplitFile(file) {
+      if (file.type !== 'application/pdf') return alert('Please select a valid PDF file.');
+      splitFile = file;
+      splitFileLabel.textContent = `Selected: ${file.name}`;
+
+      try {
+        const bytes = await file.arrayBuffer();
+        splitPdfDoc = await PDFLib.PDFDocument.load(bytes);
+        const totalPages = splitPdfDoc.getPageCount();
+        splitTotalPages.textContent = `Total Pages: ${totalPages}`;
+        document.getElementById('split-range').placeholder = `e.g. 1-${totalPages}`;
+        splitControls.classList.remove('hidden');
+      } catch (err) {
+        alert('Could not read PDF file.');
+      }
+    }
+
+    async function splitPDF() {
+      if (!splitPdfDoc) return;
+      const rangeInput = document.getElementById('split-range').value.trim();
+      const totalPages = splitPdfDoc.getPageCount();
+
+      if (!rangeInput) {
+        return alert('Please enter a page range to extract.');
+      }
+
+      // Parse range string (e.g., "1-3, 5")
+      const pagesToExtract = new Set();
+      const parts = rangeInput.split(',');
+
+      for (let part of parts) {
+        part = part.trim();
+        if (part.includes('-')) {
+          const [start, end] = part.split('-').map(num => parseInt(num.trim(), 10));
+          if (isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end) {
+            return alert(`Invalid page range "${part}". Total pages: ${totalPages}`);
+          }
+          for (let i = start; i <= end; i++) pagesToExtract.add(i - 1); // 0-based index
+        } else {
+          const pageNum = parseInt(part, 10);
+          if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {
+            return alert(`Invalid page number "${part}". Total pages: ${totalPages}`);
+          }
+          pagesToExtract.add(pageNum - 1); // 0-based index
+        }
+      }
+
+      const indices = Array.from(pagesToExtract).sort((a, b) => a - b);
+      if (indices.length === 0) return alert('No valid pages selected.');
+
+      const newPdf = await PDFLib.PDFDocument.create();
+      const copiedPages = await newPdf.copyPages(splitPdfDoc, indices);
+      copiedPages.forEach(p => newPdf.addPage(p));
+
+      const newPdfBytes = await newPdf.save();
+      downloadBlob(newPdfBytes, `easypdf-split-${splitFile.name}`);
+    }
+
+    // Helper Download function
+    function downloadBlob(bytes, filename) {
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
   </script>
 </body>
 </html>
