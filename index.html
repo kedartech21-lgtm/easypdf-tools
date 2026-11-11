@@ -11,7 +11,7 @@
 
   <!-- Header / Navigation -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="bg-indigo-600 text-white font-black rounded-lg w-9 h-9 flex items-center justify-center text-xl shadow-md">
           E
@@ -30,82 +30,116 @@
     <!-- Hero Title -->
     <div class="text-center mb-8">
       <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-2">
-        Simple, Powerful PDF Utilities
+        Professional PDF Suite
       </h1>
       <p class="text-slate-600 text-sm sm:text-base max-w-xl mx-auto">
-        Process your documents securely right inside your browser. No files are ever uploaded to any external server.
+        All the PDF utilities you need, running instantly and securely inside your browser. Zero server uploads.
       </p>
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="flex justify-center mb-6">
-      <div class="bg-slate-200 p-1 rounded-xl flex gap-1 border border-slate-300">
-        <button id="tab-merge-btn" onclick="switchTab('merge')" class="px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">
-          Merge PDFs
-        </button>
-        <button id="tab-split-btn" onclick="switchTab('split')" class="px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">
-          Split PDF
-        </button>
+    <div class="flex justify-center mb-8 overflow-x-auto pb-2">
+      <div class="bg-slate-200 p-1.5 rounded-2xl flex gap-1 border border-slate-300">
+        <button id="btn-merge" onclick="switchTab('merge')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white text-indigo-600 shadow-sm transition">Merge</button>
+        <button id="btn-split" onclick="switchTab('split')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Split</button>
+        <button id="btn-compress" onclick="switchTab('compress')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Compress</button>
+        <button id="btn-rotate" onclick="switchTab('rotate')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Rotate</button>
+        <button id="btn-img2pdf" onclick="switchTab('img2pdf')" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition">Images to PDF</button>
       </div>
     </div>
 
-    <!-- TAB 1: MERGE PDF SECTION -->
-    <section id="tab-merge" class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8">
+    <!-- ================= TAB 1: MERGE ================= -->
+    <section id="panel-merge" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8">
       <h2 class="text-xl font-bold text-slate-900 mb-2">Merge PDF Files</h2>
-      <p class="text-slate-500 text-sm mb-6">Combine multiple PDF documents into a single file in seconds.</p>
-
-      <!-- Drag & Drop Zone -->
-      <div id="merge-drop-zone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 hover:bg-indigo-50/50 rounded-xl p-8 text-center cursor-pointer transition">
-        <svg class="mx-auto h-12 w-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <p class="text-slate-700 font-medium mb-1">Click to browse or drag & drop PDFs here</p>
-        <p class="text-xs text-slate-500">Supports selecting multiple files simultaneously</p>
-        <input type="file" id="merge-file-input" accept="application/pdf" multiple class="hidden" />
+      <p class="text-slate-500 text-sm mb-6">Combine multiple PDF documents into a single organized file.</p>
+      
+      <div id="merge-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+        <p class="text-slate-700 font-medium mb-1">Click or drag & drop multiple PDF files here</p>
+        <input type="file" id="merge-input" accept="application/pdf" multiple class="hidden" />
       </div>
-
-      <!-- File List -->
-      <ul id="merge-file-list" class="mt-6 space-y-2"></ul>
-
-      <!-- Action Button -->
+      <ul id="merge-list" class="mt-4 space-y-2"></ul>
       <div class="mt-6 flex justify-end">
-        <button id="merge-btn" onclick="mergePDFs()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">
-          Merge & Download
-        </button>
+        <button id="merge-action" onclick="runMerge()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Merge & Download</button>
       </div>
     </section>
 
-    <!-- TAB 2: SPLIT PDF SECTION -->
-    <section id="tab-split" class="bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+    <!-- ================= TAB 2: SPLIT ================= -->
+    <section id="panel-split" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
       <h2 class="text-xl font-bold text-slate-900 mb-2">Split PDF Document</h2>
-      <p class="text-slate-500 text-sm mb-6">Extract specific pages or page ranges into a new PDF document.</p>
-
-      <!-- Drag & Drop Zone -->
-      <div id="split-drop-zone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 hover:bg-indigo-50/50 rounded-xl p-8 text-center cursor-pointer transition">
-        <svg class="mx-auto h-12 w-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-        </svg>
-        <p id="split-file-label" class="text-slate-700 font-medium mb-1">Click to select a PDF file to split</p>
-        <p class="text-xs text-slate-500">Select 1 PDF file</p>
-        <input type="file" id="split-file-input" accept="application/pdf" class="hidden" />
+      <p class="text-slate-500 text-sm mb-6">Extract specific pages or page ranges into a new document.</p>
+      
+      <div id="split-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+        <p id="split-label" class="text-slate-700 font-medium mb-1">Click to select a PDF file</p>
+        <input type="file" id="split-input" accept="application/pdf" class="hidden" />
       </div>
-
-      <!-- Split Range Input Controls -->
-      <div id="split-controls" class="mt-6 hidden space-y-4 border-t border-slate-200 pt-6">
+      <div id="split-options" class="mt-6 hidden space-y-4 border-t pt-6">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">Page Range to Extract</label>
-          <input type="text" id="split-range" placeholder="e.g. 1-3, 5, 8-10" class="w-full border border-slate-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <p class="text-xs text-slate-500 mt-1">Specify single pages or ranges separated by commas (e.g., <span class="font-mono bg-slate-100 px-1 rounded">1-3, 5</span>).</p>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Page Range (e.g. 1-3, 5, 7-10)</label>
+          <input type="text" id="split-range-input" class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+          <p id="split-total" class="text-xs text-slate-500 mt-1"></p>
         </div>
-
-        <div class="flex items-center justify-between">
-          <span id="split-total-pages" class="text-sm font-medium text-slate-600"></span>
-          <button id="split-btn" onclick="splitPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">
-            Extract & Download
-          </button>
+        <div class="flex justify-end">
+          <button onclick="runSplit()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Extract & Download</button>
         </div>
       </div>
     </section>
+
+    <!-- ================= TAB 3: COMPRESS ================= -->
+    <section id="panel-compress" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Compress PDF</h2>
+      <p class="text-slate-500 text-sm mb-6">Optimize and reduce PDF file size for easier sharing.</p>
+      
+      <div id="compress-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+        <p id="compress-label" class="text-slate-700 font-medium mb-1">Click to select a PDF to compress</p>
+        <input type="file" id="compress-input" accept="application/pdf" class="hidden" />
+      </div>
+      <div id="compress-options" class="mt-6 hidden space-y-4 border-t pt-6">
+        <p id="compress-stats" class="text-sm font-medium text-slate-700"></p>
+        <div class="flex justify-end">
+          <button id="compress-btn" onclick="runCompress()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Compress & Download</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: ROTATE ================= -->
+    <section id="panel-rotate" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Rotate PDF Pages</h2>
+      <p class="text-slate-500 text-sm mb-6">Turn your pages orientation by 90, 180, or 270 degrees.</p>
+      
+      <div id="rotate-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+        <p id="rotate-label" class="text-slate-700 font-medium mb-1">Click to select a PDF to rotate</p>
+        <input type="file" id="rotate-input" accept="application/pdf" class="hidden" />
+      </div>
+      <div id="rotate-options" class="mt-6 hidden space-y-4 border-t pt-6">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Rotation Angle</label>
+          <select id="rotate-angle" class="w-full border rounded-lg px-4 py-2 text-sm bg-white outline-none">
+            <option value="90">90° Clockwise</option>
+            <option value="180">180° Upside Down</option>
+            <option value="270">270° Clockwise (90° Counter-clockwise)</option>
+          </select>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="runRotate()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Rotate & Download</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: IMAGES TO PDF ================= -->
+    <section id="panel-img2pdf" class="tool-panel bg-white rounded-2xl shadow-xl border border-slate-200 p-6 sm:p-8 hidden">
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Images to PDF</h2>
+      <p class="text-slate-500 text-sm mb-6">Convert JPG or PNG pictures into a single compiled PDF.</p>
+      
+      <div id="img-drop" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50 rounded-xl p-8 text-center cursor-pointer transition">
+        <p class="text-slate-700 font-medium mb-1">Click or drag & drop image files (JPG/PNG)</p>
+        <input type="file" id="img-input" accept="image/jpeg,image/png" multiple class="hidden" />
+      </div>
+      <ul id="img-list" class="mt-4 space-y-2"></ul>
+      <div class="mt-6 flex justify-end">
+        <button id="img-action" onclick="runImgToPdf()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-semibold px-6 py-2.5 rounded-lg transition shadow-md">Convert & Download</button>
+      </div>
+    </section>
+
   </main>
 
   <!-- Footer -->
@@ -113,181 +147,17 @@
     <p>© 2026 EasyPDF. Built for 100% client-side privacy.</p>
   </footer>
 
-  <!-- App Logic Javascript -->
+  <!-- App Script -->
   <script>
-    // Tab Switcher Logic
-    function switchTab(tab) {
-      const mergeTab = document.getElementById('tab-merge');
-      const splitTab = document.getElementById('tab-split');
-      const mergeBtn = document.getElementById('tab-merge-btn');
-      const splitBtn = document.getElementById('tab-split-btn');
-
-      if (tab === 'merge') {
-        mergeTab.classList.remove('hidden');
-        splitTab.classList.add('hidden');
-        mergeBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition';
-        splitBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
-      } else {
-        splitTab.classList.remove('hidden');
-        mergeTab.classList.add('hidden');
-        splitBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition';
-        mergeBtn.className = 'px-5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
-      }
-    }
-
-    // ------------------------------------------------------------------
-    // MERGE FEATURE LOGIC
-    // ------------------------------------------------------------------
-    let mergeFiles = [];
-    const mergeDropZone = document.getElementById('merge-drop-zone');
-    const mergeFileInput = document.getElementById('merge-file-input');
-    const mergeFileList = document.getElementById('merge-file-list');
-    const mergeBtn = document.getElementById('merge-btn');
-
-    mergeDropZone.onclick = () => mergeFileInput.click();
-    mergeFileInput.onchange = (e) => handleMergeFiles(e.target.files);
-
-    mergeDropZone.ondragover = (e) => { e.preventDefault(); mergeDropZone.classList.add('border-indigo-500', 'bg-indigo-50/50'); };
-    mergeDropZone.ondragleave = () => mergeDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
-    mergeDropZone.ondrop = (e) => {
-      e.preventDefault();
-      mergeDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
-      handleMergeFiles(e.dataTransfer.files);
-    };
-
-    function handleMergeFiles(files) {
-      for (const file of files) {
-        if (file.type === 'application/pdf') mergeFiles.push(file);
-      }
-      renderMergeList();
-    }
-
-    function renderMergeList() {
-      mergeFileList.innerHTML = '';
-      mergeFiles.forEach((file, idx) => {
-        const li = document.createElement('li');
-        li.className = 'flex items-center justify-between bg-slate-100 px-4 py-2 rounded-lg text-sm font-medium text-slate-700';
-        li.innerHTML = `
-          <span class="truncate max-w-xs">${idx + 1}. ${file.name}</span>
-          <button onclick="removeMergeFile(${idx})" class="text-rose-500 hover:text-rose-700 font-bold ml-2">✕</button>
-        `;
-        mergeFileList.appendChild(li);
+    function switchTab(tabId) {
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = 'tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl text-slate-600 hover:text-slate-900 transition';
       });
-      mergeBtn.disabled = mergeFiles.length === 0;
+      document.getElementById('panel-' + tabId).classList.remove('hidden');
+      document.getElementById('btn-' + tabId).className = 'tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white text-indigo-600 shadow-sm transition';
     }
 
-    function removeMergeFile(index) {
-      mergeFiles.splice(index, 1);
-      renderMergeList();
-    }
-
-    async function mergePDFs() {
-      if (mergeFiles.length === 0) return;
-      mergeBtn.disabled = true;
-      mergeBtn.textContent = 'Processing...';
-
-      try {
-        const mergedPdf = await PDFLib.PDFDocument.create();
-        for (const file of mergeFiles) {
-          const bytes = await file.arrayBuffer();
-          const pdf = await PDFLib.PDFDocument.load(bytes);
-          const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-          copiedPages.forEach((page) => mergedPdf.addPage(page));
-        }
-
-        const mergedPdfBytes = await mergedPdf.save();
-        downloadBlob(mergedPdfBytes, 'easypdf-merged.pdf');
-      } catch (err) {
-        alert('Failed to merge PDFs. One of the files might be encrypted or corrupted.');
-      } finally {
-        mergeBtn.disabled = false;
-        mergeBtn.textContent = 'Merge & Download';
-      }
-    }
-
-    // ------------------------------------------------------------------
-    // SPLIT FEATURE LOGIC
-    // ------------------------------------------------------------------
-    let splitFile = null;
-    let splitPdfDoc = null;
-    const splitDropZone = document.getElementById('split-drop-zone');
-    const splitFileInput = document.getElementById('split-file-input');
-    const splitControls = document.getElementById('split-controls');
-    const splitFileLabel = document.getElementById('split-file-label');
-    const splitTotalPages = document.getElementById('split-total-pages');
-
-    splitDropZone.onclick = () => splitFileInput.click();
-    splitFileInput.onchange = (e) => {
-      if (e.target.files.length > 0) handleSplitFile(e.target.files[0]);
-    };
-
-    splitDropZone.ondragover = (e) => { e.preventDefault(); splitDropZone.classList.add('border-indigo-500', 'bg-indigo-50/50'); };
-    splitDropZone.ondragleave = () => splitDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
-    splitDropZone.ondrop = (e) => {
-      e.preventDefault();
-      splitDropZone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
-      if (e.dataTransfer.files.length > 0) handleSplitFile(e.dataTransfer.files[0]);
-    };
-
-    async function handleSplitFile(file) {
-      if (file.type !== 'application/pdf') return alert('Please select a valid PDF file.');
-      splitFile = file;
-      splitFileLabel.textContent = `Selected: ${file.name}`;
-
-      try {
-        const bytes = await file.arrayBuffer();
-        splitPdfDoc = await PDFLib.PDFDocument.load(bytes);
-        const totalPages = splitPdfDoc.getPageCount();
-        splitTotalPages.textContent = `Total Pages: ${totalPages}`;
-        document.getElementById('split-range').placeholder = `e.g. 1-${totalPages}`;
-        splitControls.classList.remove('hidden');
-      } catch (err) {
-        alert('Could not read PDF file.');
-      }
-    }
-
-    async function splitPDF() {
-      if (!splitPdfDoc) return;
-      const rangeInput = document.getElementById('split-range').value.trim();
-      const totalPages = splitPdfDoc.getPageCount();
-
-      if (!rangeInput) {
-        return alert('Please enter a page range to extract.');
-      }
-
-      // Parse range string (e.g., "1-3, 5")
-      const pagesToExtract = new Set();
-      const parts = rangeInput.split(',');
-
-      for (let part of parts) {
-        part = part.trim();
-        if (part.includes('-')) {
-          const [start, end] = part.split('-').map(num => parseInt(num.trim(), 10));
-          if (isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end) {
-            return alert(`Invalid page range "${part}". Total pages: ${totalPages}`);
-          }
-          for (let i = start; i <= end; i++) pagesToExtract.add(i - 1); // 0-based index
-        } else {
-          const pageNum = parseInt(part, 10);
-          if (isNaN(pageNum) || pageNum < 1 || pageNum > totalPages) {
-            return alert(`Invalid page number "${part}". Total pages: ${totalPages}`);
-          }
-          pagesToExtract.add(pageNum - 1); // 0-based index
-        }
-      }
-
-      const indices = Array.from(pagesToExtract).sort((a, b) => a - b);
-      if (indices.length === 0) return alert('No valid pages selected.');
-
-      const newPdf = await PDFLib.PDFDocument.create();
-      const copiedPages = await newPdf.copyPages(splitPdfDoc, indices);
-      copiedPages.forEach(p => newPdf.addPage(p));
-
-      const newPdfBytes = await newPdf.save();
-      downloadBlob(newPdfBytes, `easypdf-split-${splitFile.name}`);
-    }
-
-    // Helper Download function
     function downloadBlob(bytes, filename) {
       const blob = new Blob([bytes], { type: 'application/pdf' });
       const link = document.createElement('a');
@@ -295,6 +165,125 @@
       link.download = filename;
       link.click();
       URL.revokeObjectURL(link.href);
+    }
+
+    // 1. MERGE LOGIC
+    let mergeFiles = [];
+    setupDropZone('merge', (files) => {
+      for (let f of files) if(f.type === 'application/pdf') mergeFiles.push(f);
+      renderMerge();
+    });
+    function renderMerge() {
+      const list = document.getElementById('merge-list');
+      list.innerHTML = mergeFiles.map((f, i) => `<li class="flex justify-between bg-slate-100 px-4 py-2 rounded-lg text-sm"><span>${f.name}</span><button onclick="mergeFiles.splice(${i},1);renderMerge()" class="text-rose-500 font-bold">✕</button></li>`).join('');
+      document.getElementById('merge-action').disabled = mergeFiles.length === 0;
+    }
+    async function runMerge() {
+      const merged = await PDFLib.PDFDocument.create();
+      for (let f of mergeFiles) {
+        const pdf = await PDFLib.PDFDocument.load(await f.arrayBuffer());
+        const pages = await merged.copyPages(pdf, pdf.getPageIndices());
+        pages.forEach(p => merged.addPage(p));
+      }
+      downloadBlob(await merged.save(), 'easypdf-merged.pdf');
+    }
+
+    // 2. SPLIT LOGIC
+    let splitDoc = null, splitFileName = '';
+    setupDropZone('split', async (files) => {
+      if(!files[0] || files[0].type !== 'application/pdf') return;
+      splitFileName = files[0].name;
+      splitDoc = await PDFLib.PDFDocument.load(await files[0].arrayBuffer());
+      document.getElementById('split-label').textContent = `Selected: ${splitFileName}`;
+      document.getElementById('split-total').textContent = `Total pages: ${splitDoc.getPageCount()}`;
+      document.getElementById('split-options').classList.remove('hidden');
+    });
+    async function runSplit() {
+      if(!splitDoc) return;
+      const val = document.getElementById('split-range-input').value;
+      const total = splitDoc.getPageCount();
+      const pagesSet = new Set();
+      val.split(',').forEach(part => {
+        part = part.trim();
+        if(part.includes('-')) {
+          const [s, e] = part.split('-').map(Number);
+          for(let i=s; i<=e; i++) if(i>=1 && i<=total) pagesSet.add(i-1);
+        } else {
+          const n = Number(part);
+          if(n>=1 && n<=total) pagesSet.add(n-1);
+        }
+      });
+      const indices = Array.from(pagesSet).sort((a,b)=>a-b);
+      const newPdf = await PDFLib.PDFDocument.create();
+      const copied = await newPdf.copyPages(splitDoc, indices);
+      copied.forEach(p => newPdf.addPage(p));
+      downloadBlob(await newPdf.save(), `easypdf-split-${splitFileName}`);
+    }
+
+    // 3. COMPRESS LOGIC
+    let compressBytes = null, compressName = '';
+    setupDropZone('compress', async (files) => {
+      if(!files[0] || files[0].type !== 'application/pdf') return;
+      compressName = files[0].name;
+      compressBytes = await files[0].arrayBuffer();
+      document.getElementById('compress-label').textContent = `Selected: ${compressName}`;
+      document.getElementById('compress-stats').textContent = `Original Size: ${(compressBytes.byteLength / 1024).toFixed(1)} KB`;
+      document.getElementById('compress-options').classList.remove('hidden');
+    });
+    async function runCompress() {
+      if(!compressBytes) return;
+      const pdf = await PDFLib.PDFDocument.load(compressBytes);
+      // Clean save optimization via pdf-lib
+      const optimizedBytes = await pdf.save({ useObjectStreams: true });
+      downloadBlob(optimizedBytes, `easypdf-compressed-${compressName}`);
+    }
+
+    // 4. ROTATE LOGIC
+    let rotateDoc = null, rotateName = '';
+    setupDropZone('rotate', async (files) => {
+      if(!files[0] || files[0].type !== 'application/pdf') return;
+      rotateName = files[0].name;
+      rotateDoc = await PDFLib.PDFDocument.load(await files[0].arrayBuffer());
+      document.getElementById('rotate-label').textContent = `Selected: ${rotateName}`;
+      document.getElementById('rotate-options').classList.remove('hidden');
+    });
+    async function runRotate() {
+      if(!rotateDoc) return;
+      const angle = Number(document.getElementById('rotate-angle').value);
+      rotateDoc.getPages().forEach(p => p.setRotation(PDFLib.degrees(p.getRotation().angle + angle)));
+      downloadBlob(await rotateDoc.save(), `easypdf-rotated-${rotateName}`);
+    }
+
+    // 5. IMAGES TO PDF LOGIC
+    let imgFiles = [];
+    setupDropZone('img', (files) => {
+      for(let f of files) if(f.type.startsWith('image/')) imgFiles.push(f);
+      renderImgs();
+    });
+    function renderImgs() {
+      const list = document.getElementById('img-list');
+      list.innerHTML = imgFiles.map((f, i) => `<li class="flex justify-between bg-slate-100 px-4 py-2 rounded-lg text-sm"><span>${f.name}</span><button onclick="imgFiles.splice(${i},1);renderImgs()" class="text-rose-500 font-bold">✕</button></li>`).join('');
+      document.getElementById('img-action').disabled = imgFiles.length === 0;
+    }
+    async function runImgToPdf() {
+      const pdf = await PDFLib.PDFDocument.create();
+      for(let f of imgFiles) {
+        const bytes = await f.arrayBuffer();
+        let embeddedImg = f.type === 'image/png' ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+        const page = pdf.addPage([embeddedImg.width, embeddedImg.height]);
+        page.drawImage(embeddedImg, { x: 0, y: 0, width: embeddedImg.width, height: embeddedImg.height });
+      }
+      downloadBlob(await pdf.save(), 'easypdf-images.pdf');
+    }
+
+    // Helper for Drag & Drop setup
+    function setupDropZone(id, callback) {
+      const drop = document.getElementById(id + '-drop');
+      const input = document.getElementById(id + '-input');
+      drop.onclick = () => input.click();
+      input.onchange = (e) => callback(e.target.files);
+      drop.ondragover = (e) => e.preventDefault();
+      drop.ondrop = (e) => { e.preventDefault(); callback(e.dataTransfer.files); };
     }
   </script>
 </body>
